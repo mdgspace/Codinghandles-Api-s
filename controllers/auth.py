@@ -1,6 +1,9 @@
 from  aiohttp import web
 import os
 from dotenv import load_dotenv
+import logging
+from services.google import oauth
+import aiohttp_jinja2
 
 load_dotenv()
 
@@ -14,5 +17,20 @@ async def login(request):
 
 async def callback(request):
     code = request.query.get('code')
-    return web.Response(text=code)
-
+    try:
+        access_token = await oauth.get_token(code)
+        user = await oauth.get_user(access_token)
+        user_email =  user["email"]
+        context = {
+            "access_token" : access_token,
+            "email" : user_email
+        }
+        logging.info(f"Account with email: {user_email} registered")
+        response = aiohttp_jinja2.render_template("token.html", request, context)
+        return response
+    except Exception as e:
+        logging.error(f"Error : {e}")
+        response = aiohttp_jinja2.render_template("error.html", request, {})
+        return response
+   
+    
