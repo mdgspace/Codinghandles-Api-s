@@ -1,4 +1,5 @@
 aiohttp==3.9.3
+aiohttp-cors==0.7.0
 aiohttp-devtools==1.1.2
 aiohttp-jinja2==1.6
 aiosignal==1.3.1
