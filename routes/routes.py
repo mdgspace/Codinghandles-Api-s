@@ -1,4 +1,4 @@
-from controllers import home, auth , codeforces
+from controllers import home, auth , codeforces, codeshef
 
 def setup_routes(router):
     router.add_get('/', home.get_home)
@@ -7,3 +7,4 @@ def setup_routes(router):
     router.add_get('/api/codeforces/user/{user}', codeforces.getUser)
     router.add_get('/api/codeforces/contests', codeforces.getContests)
     router.add_get('/api/codeforces/submissions/{user}', codeforces.getSubmissions)
+    router.add_get('/api/codeshef/user/{user}', codeshef.getUser)

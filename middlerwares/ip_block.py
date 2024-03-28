@@ -1,8 +1,11 @@
 from aiohttp import web
 import logging
 
-
-async def ip_block_middleware(request):
+@web.middleware
+async def ip_block_middleware(request, handler):
+    if not request.path.startswith("/api"):
+        response = await handler(request)
+        return response
     redis =  request.app['redis']
     key = request.remote + ':' + request.path
     client_ip = request.remote
@@ -16,6 +19,8 @@ async def ip_block_middleware(request):
         await redis.incr(key)
     else:
         await redis.setex(key, 60, 1) 
+    response =  await handler(request)
+    return response
     
     
     

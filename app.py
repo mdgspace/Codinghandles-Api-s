@@ -7,6 +7,8 @@ import aiohttp_cors
 import aioredis
 import logging
 from dotenv import load_dotenv
+from middlerwares.auth import auth_middlerware
+from middlerwares.ip_block import ip_block_middleware
 
 load_dotenv()
 
@@ -30,6 +32,8 @@ app = web.Application()
 
 app.on_startup.append(on_startup)
 app.on_cleanup.append(on_cleanup)
+app.middlewares.append(ip_block_middleware)
+app.middlewares.append(auth_middlerware)
 
 aiohttp_jinja2.setup(
     app, loader=jinja2.FileSystemLoader(os.path.join(os.getcwd(), "templates"))

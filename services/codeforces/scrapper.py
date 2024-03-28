@@ -18,7 +18,6 @@ async def get_user_info(handle: str):
     return userInfo
 
 
-
 async def get_upcoming_contests():
     url="https://codeforces.com/contests/page/1"
     html = await fetch_url(url)
@@ -41,9 +40,6 @@ async def get_upcoming_contests():
     return contests
 
 
-
-
-
 async def checkHandle(handle: str):
     try:
         url = f"https://codeforces.com/profile/{handle}"
@@ -59,19 +55,13 @@ async def checkHandle(handle: str):
         return False
 
 
-
-
-
 async def get_user_submissions(handle: str, timestamp :int):
     pageCount = 1
     submission_list = []
     whileBreak = False
-    
     while True:
-
         if whileBreak:
             break
-        
         url = f"https://codeforces.com/submissions/{handle}/page/{pageCount}"
         html = await fetch_url(url)
         soup = BeautifulSoup(html, "html.parser")
@@ -112,7 +102,7 @@ async def get_user_submissions(handle: str, timestamp :int):
             submission_object = CodeforcesSubmission(problemCode=problem_code, problemName=problem, time = unix_time, language=language, status=submission_verdict, timeConsumed=timeconsumed, spaceConsumed=spaceconsumed)
             submission_list.append(submission_object)
         pageCount+=1
-
+        
     return submission_list
     
     

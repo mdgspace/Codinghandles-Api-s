@@ -1,13 +1,9 @@
-from middlerwares.ip_block import ip_block_middleware
-from middlerwares.auth import auth_middlerware
 from aiohttp import web
 from services.codeforces import scrapper
 import json
 import logging 
 
 async def getUser(request):
-    await ip_block_middleware(request)
-    await auth_middlerware(request)
     handle =  request.match_info['user']
     if not handle:
         return web.Response(status=400, text=f"Missing user parameter")
@@ -22,8 +18,6 @@ async def getUser(request):
         
 
 async def getContests(request):
-   await ip_block_middleware(request)
-   await auth_middlerware(request)
    try: 
        contests =  await scrapper.get_upcoming_contests()
        contest_dict_list = [contest.__dict__ for contest in contests]
@@ -36,8 +30,6 @@ async def getContests(request):
 
 
 async def getSubmissions(request):
-    await ip_block_middleware(request)
-    await auth_middlerware(request)
     handle =  request.match_info['user']
     isHandle = await scrapper.checkHandle(handle)
     if  not isHandle:
