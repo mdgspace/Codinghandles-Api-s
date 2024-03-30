@@ -8,3 +8,4 @@ def setup_routes(router):
     router.add_get('/api/codeforces/contests', codeforces.getContests)
     router.add_get('/api/codeforces/submissions/{user}', codeforces.getSubmissions)
     router.add_get('/api/codeshef/user/{user}', codeshef.getUser)
+    router.add_get('/api/codeshef/contests', codeshef.getContests)
