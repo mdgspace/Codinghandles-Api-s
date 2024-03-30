@@ -1,21 +1,23 @@
 
 from bs4 import  BeautifulSoup
-from services.codeforces.utils import fetch_url, get_unix_time
+from services.codeforces.utils import fetch_url, get_unix_time, fetch_userInfo
 from models.userInfo import CodeforceUserInfo
 from models.contest import CodeforcesContestInfo
 from models.submission import CodeforcesSubmission
+import asyncio
 
 async def get_user_info(handle: str):
-    url = f"https://codeforces.com/profile/{handle}"
-    html = await fetch_url(url)
-    soup = BeautifulSoup(html, "html.parser")
-    name= soup.select("h1 a.rated-user.user-gray")[0].text.strip()
-    rating = soup.select("li span.user-gray")
-    current_rating = rating[0].text.strip()
-    status= rating[1].text.strip()
-    max_rating = rating[2].text.strip()
-    userInfo = CodeforceUserInfo(handle=name,rating=int(current_rating), maxRating=int(max_rating), status=status)
-    return userInfo
+    for _ in range(3) :
+        userRes = await fetch_userInfo(handle)
+        if userRes == None:
+            await asyncio.sleep(10)
+            continue
+        elif userRes.get('error')  is None:
+            userInfo = CodeforceUserInfo(handle=handle,rating=int(userRes.get('rating')), maxRating=int(userRes.get('maxRating')), status=userRes.get('rank'))
+            return 200,userInfo
+        else:
+            return 404,"No user with this handle"
+    return 500, "Internal Server Error"
 
 
 async def get_upcoming_contests():
@@ -45,13 +47,13 @@ async def checkHandle(handle: str):
         url = f"https://codeforces.com/profile/{handle}"
         html = await fetch_url(url)
         soup = BeautifulSoup(html, "html.parser")
-        name= soup.select("h1 a.rated-user.user-gray")[0].text.strip()
-        rating = soup.select("li span.user-gray")
-        current_rating = rating[0].text.strip()
-        status= rating[1].text.strip()
-        max_rating = rating[2].text.strip()
+        rating = soup.select("span")
+        current_rating = rating[17].text.strip()
+        status= rating[18].text.strip()
+        max_rating = rating[21].text.strip()
         return True
     except Exception as e:
+        print(e)
         return False
 
 

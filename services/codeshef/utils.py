@@ -1,7 +1,8 @@
 import aiohttp
-
+import cloudscraper
 async def fetch_url(url):
     async with aiohttp.ClientSession() as session:
-        response = await session.get( url)
-        return await response.text()
+        scraper = cloudscraper.create_scraper(delay=10, browser="chrome") 
+        content =  scraper.get(url) 
+        return content.text
 

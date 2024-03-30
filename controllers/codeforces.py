@@ -5,17 +5,11 @@ import logging
 
 async def getUser(request):
     handle =  request.match_info['user']
-    if not handle:
-        return web.Response(status=400, text=f"Missing user parameter")
-    try:
-        userInfo = await scrapper.get_user_info(handle)
-        serialized_data = json.dumps(userInfo.__dict__)
-        logging.info(f"Scrapped codeforces userInfo data for {handle}: {serialized_data}")
-        return web.Response(status=200, text=serialized_data)
-    except Exception as e:
-        logging.error("Error: ",e)
-        return web.Response(status=404, text="No user found with this handle")
-        
+    status, res = await scrapper.get_user_info(handle)
+    if status == 200:
+       res = json.dumps(res.__dict__)
+    return web.Response(status=status, text=res)
+    
 
 async def getContests(request):
    try: 
@@ -31,9 +25,11 @@ async def getContests(request):
 
 async def getSubmissions(request):
     handle =  request.match_info['user']
-    isHandle = await scrapper.checkHandle(handle)
-    if  not isHandle:
+    status, _ = await scrapper.get_user_info(handle)
+    if status == 404:
         return web.Response(status=404, text="User does not exists")
+    elif status == 500:
+        return web.Response(status=500, text="Internal Server Error")
     timestamp = request.query.get('timestamp')
     if timestamp is not None and  not timestamp.isdigit():
         return web.Response(status=400, text="Invalid timestamp provided")
