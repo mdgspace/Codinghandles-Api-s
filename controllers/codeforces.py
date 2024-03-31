@@ -23,6 +23,7 @@ async def getContests(request):
        return web.Response(status=500, text="Internal Server Error")
 
 
+
 async def getSubmissions(request):
     handle =  request.match_info['user']
     status, _ = await scrapper.get_user_info(handle)
@@ -44,7 +45,7 @@ async def getSubmissions(request):
        logging.info(f"Codeforces handle {handle} submission scraped: {serialized_data}")
        return web.Response(status=200, text=serialized_data)
     except Exception as e:
-        logging.error(f"Error while scrapping submissions : {e}")
+        logging.error(f"Error while scrapping codeforces submissions : {e}")
         return web.Response(status=500, text="Internal Server Error")
 
 

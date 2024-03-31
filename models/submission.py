@@ -10,3 +10,11 @@ class CodeforcesSubmission:
     status: str 
     timeConsumed: str 
     spaceConsumed: str 
+
+
+@dataclass
+class CodeshefSubmission:
+    problemCode: str 
+    time: int 
+    status: str
+    language: str
