@@ -10,8 +10,8 @@ async def graphql(query, variables, opertation):
     async with aiohttp.ClientSession() as session:
         async with session.post('https://leetcode.com/graphql/', json=payload) as response:
             if response.status == 200:
-                res= await response.text()
-                return res 
+                res= await response.json()
+                return res["data"]
             return None
             
 

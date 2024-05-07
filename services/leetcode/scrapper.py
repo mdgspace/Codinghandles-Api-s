@@ -1,6 +1,15 @@
-import utils
+from services.leetcode.utils import graphql
 from models.userInfo import LeetcodeUserInfo
 from models.submission import LeetcodeACSubmission
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import undetected_chromedriver as uc 
+
+
+
+
+
 async def get_user_info(handle: str):
     query = '''
   query userPublicProfile($username: String!) {
@@ -22,7 +31,8 @@ async def get_user_info(handle: str):
 '''
     variables = {'username': handle}
     operation= 'userPublicProfile'
-    user  = await utils.graphql(query, variables, operation)
+    matchedUser  = await graphql(query, variables, operation)
+    user= matchedUser["matchedUser"]
     if user != None :
         accuracy=0
         if user["submitStats"]["totalSubmissionNum"][0]['submissions'] != 0:
@@ -46,13 +56,16 @@ async def get_user_submissions(handle: str, timestamp: int):
       }
     }
 '''
-    variables = {"username": handle, "limit": 100}
-    submissions = await utils.graphql(query, variables, "recentAcSubmissions")
+    user = await get_user_info(handle)
+    if user is None:
+        return None
+    variables = {"username": handle, "limit": 1000}
+    submissions = await graphql(query, variables, "recentAcSubmissions")
     submissionsList = []
     if submissions!=None :
         for sub in submissions["recentAcSubmissionList"]:
-            if int(sub["1712992296"])>timestamp:
-                subObject = LeetcodeACSubmission(problemName=sub["title"], problemSlug=sub["titleSlug"], time=int(sub["1712992296"]))
+            if int(sub["timestamp"])>timestamp:
+                subObject = LeetcodeACSubmission(problemName=sub["title"], problemSlug=sub["titleSlug"], time=int(sub["timestamp"]))
                 submissionsList.append(subObject)
             else:
                 break 
@@ -61,7 +74,4 @@ async def get_user_submissions(handle: str, timestamp: int):
     return None
 
     
-
-
-
 

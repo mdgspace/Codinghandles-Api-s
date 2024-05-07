@@ -29,9 +29,9 @@ async def getContests(request):
 async def getSubmissions(request):
     handle = request.match_info['user']
     timestamp = request.query.get('timestamp')
-    # status, _ = await scrapper.get_user_info(handle)
-    # if status != 200 :
-    #     return web.Response(status=404, text="User does not exists")
+    status, _ = await scrapper.get_user_info(handle)
+    if status != 200 :
+        return web.Response(status=404, text="User does not exists")
     if timestamp is not None and  not timestamp.isdigit():
         return web.Response(status=400, text="Invalid timestamp provided")
     if timestamp is None:
