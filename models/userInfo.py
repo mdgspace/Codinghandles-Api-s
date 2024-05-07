@@ -15,3 +15,9 @@ class CodeshefUserInfo:
     maxRating: int 
     stars: int 
     status: str
+
+@dataclass 
+class LeetcodeUserInfo:
+    handle: str 
+    worldRank: int
+    accuracy: int

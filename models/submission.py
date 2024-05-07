@@ -18,3 +18,10 @@ class CodeshefSubmission:
     time: int 
     status: str
     language: str
+
+
+@dataclass
+class LeetcodeACSubmission:
+    problemName: str 
+    problemSlug: str 
+    time: int

@@ -6,7 +6,6 @@ from models.userInfo import CodeshefUserInfo
 from models.contest import CodeshefContestInfo
 from models.submission import  CodeshefSubmission
 import undetected_chromedriver as uc 
-from selenium_stealth import stealth
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -70,18 +69,8 @@ async def get_user_submissions(handle: str, timestamp: int):
     options = uc.ChromeOptions()
     options.headless = False 
     options.add_argument("--blink-settings=imagesEnabled=false")
-
     driver = uc.Chrome(use_subprocess=True, options=options)
     wait = WebDriverWait(driver, 10)
-    stealth(
-    driver,
-    languages=["en-US", "en"],
-    vendor="Google Inc.",
-    platform="Win32",
-    webgl_vendor="Intel Inc.",
-    renderer="Intel Iris OpenGL Engine",
-    fix_hairline=True,
-    )
     url = f"https://www.codechef.com/users/{handle}"
     driver.get(url)
     time.sleep(2)
