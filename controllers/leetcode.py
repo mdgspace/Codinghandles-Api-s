@@ -15,6 +15,8 @@ async def getUser(request):
         logging.error("Error:",e)
         return web.Response(status=500, text="Internal Server Error")
 
+
+
 async def getSubmissions(request):
     handle = request.match_info['user']
     timestamp = request.query.get('timestamp')
@@ -37,5 +39,14 @@ async def getSubmissions(request):
 
 
 
-        
+async def getContests(request):
+    try:
+        contests = await scrapper.get_contests()
+        contest_dict_list = [contest.__dict__ for contest in contests]
+        serialized_data = json.dumps(contest_dict_list)
+        logging.info("Leetcode contests scrapped: ", serialized_data)
+        return web.Response(status=200, text=serialized_data)      
+    except Exception as e:
+        logging.error("Error while scrapping Leetcode contests:",e)
+        return web.Response(status=500, text="Internal Server Error")
         

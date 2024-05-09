@@ -12,3 +12,4 @@ def setup_routes(router):
     router.add_get('/api/codeshef/submissions/{user}', codeshef.getSubmissions)
     router.add_get('/api/leetcode/user/{user}', leetcode.getUser)
     router.add_get('/api/leetcode/submissions/{user}', leetcode.getSubmissions)
+    router.add_get('/api/leetcode/contests', leetcode.getContests)

@@ -1,14 +1,8 @@
-from services.leetcode.utils import graphql
+from services.leetcode.utils import graphql, fetch_url, unix_time
 from models.userInfo import LeetcodeUserInfo
 from models.submission import LeetcodeACSubmission
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import undetected_chromedriver as uc 
-
-
-
-
+from models.contest import LeetcodeContestInfo
+from bs4 import BeautifulSoup
 
 async def get_user_info(handle: str):
     query = '''
@@ -73,5 +67,29 @@ async def get_user_submissions(handle: str, timestamp: int):
         return submissionsList
     return None
 
-    
+
+async def get_contests():
+      ur = "https://leetcode.com/contest/"
+      html = await fetch_url(ur)
+      soup  =  BeautifulSoup(html, 'html.parser')
+      contests = soup.select('a[href^="/contest/"]')
+      contestList = []
+      for i in range(2):
+          name = contests[i].select_one('div.truncate span').text.strip()
+          time = contests[i].find_all('div', _class=False)[-1].text.strip()
+          # unixTime= unix_time(time)
+          contestObject = LeetcodeContestInfo(name=name, time=time)
+          contestList.append(contestObject)
+      return contestList
+      
+         
+
+
+          
+      
+
+
+
+
+        
 
