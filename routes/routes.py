@@ -1,4 +1,4 @@
-from controllers import home, auth , codeforces, codeshef, leetcode
+from controllers import home, auth , codeforces, codeshef, leetcode, interviewbit
 
 def setup_routes(router):
     router.add_get('/', home.get_home)
@@ -13,3 +13,5 @@ def setup_routes(router):
     router.add_get('/api/leetcode/user/{user}', leetcode.getUser)
     router.add_get('/api/leetcode/submissions/{user}', leetcode.getSubmissions)
     router.add_get('/api/leetcode/contests', leetcode.getContests)
+    router.add_get('/api/interviewbit/user/{user}', interviewbit.get_user_info)
+    router.add_get('/api/interviewbit/submissions/{user}', interviewbit.get_submissions)
