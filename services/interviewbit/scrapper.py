@@ -1,5 +1,7 @@
-from services.interviewbit.utils import fetch_url
+from services.interviewbit.utils import fetch_url, dateToUnix
 from models.userInfo import InterviewbitUserInfo
+from models.submission import InterviewbitSubmission
+import datetime
 
 async def get_user_info(handle: str):
     userUrl = "https://www.interviewbit.com/v2/profile/username?id="+handle
@@ -25,7 +27,33 @@ async def get_user_info(handle: str):
 
 
 # https://www.interviewbit.com/v2/profile/username/daily-user-submissions/2024/?id=monarch-s-empire    
-# async def get_submissions(handle: str, timestamp: int):
+async def get_submissions(handle: str, timestamp: int):
+    current_year = datetime.datetime.now().year
+    submissionRes = []
+    while(True):
+        url = "https://www.interviewbit.com/v2/profile/username/daily-user-submissions/" + str(current_year) + "/?id="+handle
+        submissions = await fetch_url(url)
+        if submissions is None:
+           return None 
+        if len(submissions) == 0:
+           return submissionRes
+        submissions = submissions[::-1]
+        for submission in submissions:
+            count = submission["count"]
+            dateStr = submission["date"]
+            unix_time = dateToUnix(dateStr)
+            if unix_time <= timestamp:
+                return submissionRes
+            subObject = InterviewbitSubmission(count=int(count), time=unix_time)
+            submissionRes.append(subObject)
+        current_year = current_year - 1
+    
+
+
+       
+
+
+
 
  
 

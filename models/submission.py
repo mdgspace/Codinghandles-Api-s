@@ -25,3 +25,9 @@ class LeetcodeACSubmission:
     problemName: str 
     problemSlug: str 
     time: int
+
+
+@dataclass 
+class InterviewbitSubmission:
+    count: int
+    time: int
