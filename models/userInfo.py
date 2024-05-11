@@ -21,3 +21,11 @@ class LeetcodeUserInfo:
     handle: str 
     worldRank: int
     accuracy: int
+
+
+@dataclass
+class InterviewbitUserInfo:
+    handle: str 
+    worldRank: int 
+    accuracy: int 
+    totalSolved: int
