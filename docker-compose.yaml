@@ -1,0 +1,29 @@
+version: '3.3'
+networks:
+  network:
+    driver: bridge 
+
+services:
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: codingHandleApi-Application
+    networks:
+      - network
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    container_name: redis 
+    networks:
+      - network 
+    ports:
+      - "6379:6379"
+  
