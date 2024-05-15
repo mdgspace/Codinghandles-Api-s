@@ -19,3 +19,9 @@ class CodeshefContestInfo:
 class LeetcodeContestInfo:
     name: str 
     time: int
+
+@dataclass
+class InterviewbitContestInfo:
+    name: str 
+    time: int 
+    length: int

@@ -1,6 +1,6 @@
 import logging
 from aiohttp import web
-from services.interviewbit.scrapper import get_user_info, get_submissions
+from services.interviewbit.scrapper import get_user_info, get_submissions, get_contests
 import json 
 
 async def getUser(request):
@@ -34,4 +34,16 @@ async def getSubmissions(request):
         return web.Response(status=200, text=serialized_data)
     except Exception as e:
         logging.error("Error:",e)
+        return web.Response(status=500, text="Internal Server Error")
+
+
+async def getContests(request):
+    try:
+        contests = await get_contests()
+        contest_dict_list = [contest.__dict__ for contest in contests]
+        serialized_data = json.dumps(contest_dict_list)
+        logging.info("Interviewbit contests scrapped: ", serialized_data)
+        return web.Response(status=200, text=serialized_data)   
+    except Exception as e:
+        logging.error("Error while scrapping Interviewbit contests:",e)
         return web.Response(status=500, text="Internal Server Error")

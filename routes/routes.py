@@ -15,3 +15,4 @@ def setup_routes(router):
     router.add_get('/api/leetcode/contests', leetcode.getContests)
     router.add_get('/api/interviewbit/user/{user}', interviewbit.getUser)
     router.add_get('/api/interviewbit/submissions/{user}', interviewbit.getSubmissions)
+    router.add_get('/api/interviewbit/contests', interviewbit.getContests)

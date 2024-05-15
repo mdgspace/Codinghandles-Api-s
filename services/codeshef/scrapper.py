@@ -102,7 +102,6 @@ async def get_user_submissions(handle: str, timestamp: int):
              break  
         driver.execute_script("onload_getpage_recent_activity_user('next');")
         element = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.pageinfo")))
-    
     driver.quit()
     return  submissions
 

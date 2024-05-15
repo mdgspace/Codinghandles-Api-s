@@ -1,7 +1,10 @@
-from services.interviewbit.utils import fetch_url, dateToUnix
+from services.interviewbit.utils import fetch_url, dateToUnix, scrape_url, contestStartTimeToUnix, durationToSeconds
 from models.userInfo import InterviewbitUserInfo
 from models.submission import InterviewbitSubmission
+from models.contest import InterviewbitContestInfo
 import datetime
+from bs4 import BeautifulSoup
+from datetime import datetime
 
 async def get_user_info(handle: str):
     userUrl = "https://www.interviewbit.com/v2/profile/username?id="+handle
@@ -50,7 +53,37 @@ async def get_submissions(handle: str, timestamp: int):
     
 
 
-       
+async def get_contests():
+    url = "https://www.interviewbit.com/contests/"
+    html = await scrape_url(url)
+    soup = BeautifulSoup(html, 'html.parser')
+    contents = soup.select('a[href^="/contest/"]')
+    contestList = []
+    for i in range(2):
+        href = contents[i].get('href')
+        contest_name = contents[i].text.strip()
+        contest_url = "https://www.interviewbit.com"+href
+        contest_html = await scrape_url(contest_url)
+        contest_soup = BeautifulSoup(contest_html, 'html.parser')
+        info_value_spans = contest_soup.find_all('span', class_='info-value')
+        contest_start_time = contestStartTimeToUnix(info_value_spans[0].text.strip())
+        current_datetime = datetime.now()
+        current_unix_time = int(current_datetime.timestamp())
+        if(contest_start_time<current_unix_time):
+            continue
+        contest_length = durationToSeconds(info_value_spans[2].text.strip())
+        contest_object = InterviewbitContestInfo(name=contest_name, time=contest_start_time, length=contest_length)
+        contestList.append(contest_object)
+    return contestList
+
+
+
+
+
+
+
+
+
 
 
 
