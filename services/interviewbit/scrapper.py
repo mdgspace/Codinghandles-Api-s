@@ -22,7 +22,7 @@ async def get_user_info(handle: str):
                 totalSolved = count
     if totalSolved is not 0:
         accuracy = (totalSolved*100)/sum 
-    userObject = InterviewbitUserInfo(handle=handle, worldRank=int(worldRank), accuracy=accuracy, totalSolved=totalSolved)
+    userObject = InterviewbitUserInfo(handle=handle, worldRank=int(worldRank), accuracy=int(accuracy), totalSolved=totalSolved)
     return userObject
 
 
