@@ -19,3 +19,6 @@ A service which provides api's for extracting popular codinghandles data.
 ## Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
+## API'S
+
+API's  can be found in [thunder-client-collection](thunder-collection_codingHandleApi's.json)
