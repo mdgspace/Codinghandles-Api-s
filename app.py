@@ -57,7 +57,7 @@ routes.setup_routes(router)
 for route in list(app.router.routes()):
     cors.add(route)
 
-web.run_app(app,host='0.0.0.0', port=8080)
+web.run_app(app,host='0.0.0.0', port=8000)
 
 
 if __name__ == '__main__': 
