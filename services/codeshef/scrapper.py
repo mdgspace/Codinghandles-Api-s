@@ -67,8 +67,13 @@ async def get_upcoming_contests():
             
 async def get_user_submissions(handle: str, timestamp: int):
     options = uc.ChromeOptions()
-    options.headless = False 
+    options.headless = True 
+    options.add_argument("--no-sandbox")
     options.add_argument("--blink-settings=imagesEnabled=false")
+    options.add_argument("--disable-dev-shm-usage")
+    chrome_prefs = {}
+    options.experimental_options["prefs"] = chrome_prefs
+    chrome_prefs["profile.default_content_settings"] = {"images": 2}
     driver = uc.Chrome(use_subprocess=True, options=options)
     wait = WebDriverWait(driver, 10)
     url = f"https://www.codechef.com/users/{handle}"
