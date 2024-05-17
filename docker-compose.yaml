@@ -7,7 +7,7 @@ services:
   application:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.backend
     container_name: codingHandleApi-Application
     networks:
       - network

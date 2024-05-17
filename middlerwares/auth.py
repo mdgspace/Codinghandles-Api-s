@@ -1,5 +1,4 @@
 from aiohttp import web
-import logging
 from services.google.oauth import get_user
 
 
@@ -13,7 +12,9 @@ async def auth_middlerware(request, handler):
         return web.Response(status=401, text="Unauthorized request")
     try:
        user = await get_user(token)
+       if user is None:
+           return web.Response(status=401, text="Unauthorised request")
     except Exception as e:
-       return web.Response(status=401, text="Unauthorised request")
+       return web.Response(status=500, text="Internal Server Error")
     response = await handler(request)
     return response

@@ -21,8 +21,11 @@ async def get_token(code):
     }
     async with aiohttp.ClientSession() as session:
         async with session.post(url, data=data) as response:
-            response_json= await response.json()
-            return response_json['access_token']
+            if response.status == 200:
+                response_json= await response.json()
+                return response_json['access_token']
+            return None
+
 
 
 async def get_user(token):
@@ -32,5 +35,7 @@ async def get_user(token):
     }
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers) as response:
-            response_json =  await response.json()
-            return response_json
+            if response.status == 200:
+                response_json =  await response.json()
+                return response_json
+            return None

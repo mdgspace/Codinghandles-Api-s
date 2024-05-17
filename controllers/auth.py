@@ -1,36 +1,29 @@
 from  aiohttp import web
-import os
-from dotenv import load_dotenv
 import logging
 from services.google import oauth
-import aiohttp_jinja2
-from middlerwares.ip_block import ip_block_middleware
-load_dotenv()
+import json
 
-CLIENT_ID =os.getenv('CLIENT_ID')
-CLIENT_SECRET=os.getenv('CLIENT_SECRET')
-REDIERECT_URL=os.getenv('REDIERECT_URL')
 
 async def login(request):
-    authUrl= f'https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={CLIENT_ID}&redirect_uri={REDIERECT_URL}&scope=email profile'
-    return web.HTTPFound(authUrl)
-
-async def callback(request):
     code = request.query.get('code')
+    if code is None:
+        return web.Response(status=404, text="No code provided")
     try:
         access_token = await oauth.get_token(code)
+        if access_token is None:
+            return web.Response(status=401, text="Invalid code provided")
         user = await oauth.get_user(access_token)
         user_email =  user["email"]
-        context = {
+        data = {
             "access_token" : access_token,
             "email" : user_email
         }
+        serialized_data = json.dumps(data.__dict__)
         logging.info(f"Account with email: {user_email} registered")
-        response = aiohttp_jinja2.render_template("token.html", request, context)
-        return response
+        return web.Response(status=200, text=serialized_data)
     except Exception as e:
         logging.error(f"Error : {e}")
-        response = aiohttp_jinja2.render_template("error.html", request, {})
-        return response
+        return web.Response(status=500, text="Internal Server Error")
+
    
     
